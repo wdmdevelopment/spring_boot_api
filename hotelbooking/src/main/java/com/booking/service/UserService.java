@@ -51,44 +51,39 @@ public class UserService {
 	@Value("${file.upload-profile-dir}")
 	private String fileUploadProfileDir;
 
-	public User registerUser(String user, MultipartFile file)
-			 {
+	public User registerUser(String user, MultipartFile file) {
 
-		try { 
-		UserDTO userDTO = objectMapper.readValue(user, UserDTO.class);
+		try {
+			UserDTO userDTO = objectMapper.readValue(user, UserDTO.class);
 
-		if (userRepo.existsByEmailIdIgnoreCase(userDTO.getEmailId())) {
+			if (userRepo.existsByEmailIdIgnoreCase(userDTO.getEmailId())) {
 
-			throw new NotFoundException();
+				throw new NotFoundException();
+			}
+
+			User createUser = new User();
+			createUser.setUserName(userDTO.getUserName());
+			createUser.setEmailId(userDTO.getEmailId());
+
+			createUser.setFirstName(userDTO.getFirstName());
+			createUser.setLastName(userDTO.getLastName());
+
+			createUser.setStatus(UserStatus.PENDING.name());
+
+			createUser.setRole(Role.ROLE_ADMIN.name());
+
+			File fileName = ImageUtils.uploadFile(file, fileUploadProfileDir);
+
+			if (fileName != null) {
+				createUser.setPicture(fileUploadProfileDir + File.separator + fileName);
+			}
+			createUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+
+			return userRepo.save(createUser);
+		} catch (Exception e) {
+			throw new UsernameNotFoundException(e.getMessage());
 		}
-		
-		User createUser = new User();
-		createUser.setUserName(userDTO.getUserName());
-		createUser.setEmailId(userDTO.getEmailId());
-	 
-		createUser.setFirstName(userDTO.getFirstName());
-		createUser.setLastName(userDTO.getLastName());
-		
-		createUser.setStatus(UserStatus.PENDING.name());
-		
-		createUser.setRole(Role.ROLE_ADMIN.name());
-	
-		 String fileName = ImageUtils.uploadFile(file, fileUploadProfileDir);
 
- 		if (fileName != null) {
- 			//userDTO.setProfilePicture(fileUploadProfileDir + File.separator + fileName);
- 			createUser.setPicture(fileUploadProfileDir + File.separator + fileName);
- 		}
-		createUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
- 
-		 
-		return userRepo.save(createUser);
-		}
-		catch (Exception e) {
-			 throw new UsernameNotFoundException(e.getMessage());
-		}
-		 
-		 
 	}
 
 	public LoginResponseDTO login(LoginDTO loginDTO) {
@@ -102,10 +97,10 @@ public class UserService {
 			String jwt = jwtutils.generateJwtToken(authentication);
 
 			UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-			
-			
+
 			return new LoginResponseDTO(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getFirstName(),
-					userDetails.getLastName(), userDetails.getPicture(), userDetails.getUserNameLogin(), userDetails.getStatus(), userDetails.getRole());
+					userDetails.getLastName(), userDetails.getPicture(), userDetails.getUserNameLogin(),
+					userDetails.getStatus(), userDetails.getRole());
 
 		} catch (Exception e) {
 
