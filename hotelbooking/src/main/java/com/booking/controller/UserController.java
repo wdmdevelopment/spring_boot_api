@@ -32,12 +32,12 @@ public class UserController {
 
 		@PostMapping("/signup")
 		public ResponseEntity<?> registerUser(@Valid @RequestPart("data") String userData,
-				@RequestParam(value = "profile") MultipartFile file) throws Exception {
+				@RequestParam(value = "profile") MultipartFile file)  {
 			return new ResponseEntity<User>(userService.registerUser(userData, file), HttpStatus.CREATED);
 		}
 
 		@PostMapping("/signin")
-		public ResponseEntity<?> loginUser(@Valid @RequestBody LoginDTO loginDetails) throws Exception {
+		public ResponseEntity<?> loginUser(@Valid @RequestBody LoginDTO loginDetails)  {
 			return new ResponseEntity<LoginResponseDTO>(userService.login(loginDetails), HttpStatus.OK);
 		}
 

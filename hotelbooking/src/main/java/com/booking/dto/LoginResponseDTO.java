@@ -1,7 +1,5 @@
 package com.booking.dto;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +16,7 @@ public class LoginResponseDTO {
 	private String lastName;
 	private String picture;
 	private String userName;
-	private List<String> roles;
 	private String status;
+	private String roles;
 	
 }

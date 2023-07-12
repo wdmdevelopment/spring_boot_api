@@ -12,6 +12,7 @@ import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +23,7 @@ import com.booking.dto.LoginDTO;
 import com.booking.dto.LoginResponseDTO;
 import com.booking.dto.UserDTO;
 import com.booking.entity.User;
+import com.booking.exception.UserNotFoundException;
 import com.booking.repository.UserRepository;
 import com.booking.security.jwt.JwtUtils;
 import com.booking.security.service.UserDetailsImpl;
@@ -49,7 +51,7 @@ public class UserService {
 	@Value("${file.upload-profile-dir}")
 	private String fileUploadProfileDir;
 
-	public User registerUser(String user, MultipartFile file) throws Exception
+	public User registerUser(String user, MultipartFile file)
 			 {
 
 		try { 
@@ -83,13 +85,13 @@ public class UserService {
 		return userRepo.save(createUser);
 		}
 		catch (Exception e) {
-			 throw new Exception(e.getMessage());
+			 throw new UsernameNotFoundException(e.getMessage());
 		}
 		 
 		 
 	}
 
-	public LoginResponseDTO login(LoginDTO loginDTO) throws Exception {
+	public LoginResponseDTO login(LoginDTO loginDTO) {
 		try {
 
 			Authentication authentication = authenticationManager
@@ -100,15 +102,14 @@ public class UserService {
 			String jwt = jwtutils.generateJwtToken(authentication);
 
 			UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
+			
+			
 			return new LoginResponseDTO(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getFirstName(),
-					userDetails.getLastName(), userDetails.getPicture(),
-					userDetails.getUsername(),
-					userDetails.getAuthorities().stream().map(e -> e.getAuthority()).collect(Collectors.toList()), userDetails.getStatus());
+					userDetails.getLastName(), userDetails.getPicture(), userDetails.getUserNameLogin(), userDetails.getStatus(), userDetails.getRole());
 
 		} catch (Exception e) {
 
-			throw new 	Exception(e.getMessage());
+			throw new UserNotFoundException(e.getMessage());
 		}
 
 	}

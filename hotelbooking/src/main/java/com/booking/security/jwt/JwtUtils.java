@@ -35,12 +35,12 @@ public class JwtUtils {
 
 		UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
-		String authorities = userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority)
-				.collect(Collectors.joining(","));
+//		String authorities = userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+//				.collect(Collectors.joining(","));
 
 		Claims claims = Jwts.claims();
 
-		claims.put("authorities", authorities);
+		claims.put("authorities", userPrincipal.getRole());
 		claims.put("email", userPrincipal.getUsername());
 		claims.put("firstName", userPrincipal.getFirstName());
 		claims.put("lastName", userPrincipal.getLastName());
