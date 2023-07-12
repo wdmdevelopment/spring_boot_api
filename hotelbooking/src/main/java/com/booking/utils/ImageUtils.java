@@ -15,7 +15,6 @@ public class ImageUtils {
 			FileOutputStream output = new FileOutputStream(path);
 			output.write(file.getBytes());
 			output.close();
-
 			return path;
 		} catch (Exception e) {
 			throw new NotFoundException(e.getMessage());
