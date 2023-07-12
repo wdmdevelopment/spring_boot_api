@@ -1,13 +1,17 @@
 package com.booking.entity;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
-
+ 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
@@ -44,11 +48,10 @@ public class User {
 	@JsonIgnore
 	private String password;
 	
-	 
 	private String role;
-	 
 	
-	
-	
+	@OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE ,CascadeType.REMOVE})
+	@JsonIgnore
+	private List<Property> property;
 	
 }

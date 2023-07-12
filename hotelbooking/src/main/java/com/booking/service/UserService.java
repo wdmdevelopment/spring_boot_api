@@ -1,22 +1,16 @@
 package com.booking.service;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.booking.constant.Role;
 import com.booking.constant.UserStatus;
 import com.booking.dto.LoginDTO;
@@ -59,8 +53,9 @@ public class UserService {
 
 		if (userRepo.existsByEmailIdIgnoreCase(userDTO.getEmailId())) {
 
-			throw new NotFoundException();
+			throw new UserNotFoundException("Email alredy exist");
 		}
+		 
 		
 		User createUser = new User();
 		createUser.setUserName(userDTO.getUserName());
@@ -76,12 +71,9 @@ public class UserService {
 		 String fileName = ImageUtils.uploadFile(file, fileUploadProfileDir);
 
  		if (fileName != null) {
- 			//userDTO.setProfilePicture(fileUploadProfileDir + File.separator + fileName);
  			createUser.setPicture(fileUploadProfileDir + File.separator + fileName);
  		}
 		createUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
- 
-		 
 		return userRepo.save(createUser);
 		}
 		catch (Exception e) {
