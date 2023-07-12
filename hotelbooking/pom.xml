@@ -7,7 +7,7 @@
 		<version>2.7.7</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.ems</groupId>
+	<groupId>com.booking</groupId>
 	<artifactId>hotelbooking</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>hotelbooking</name>

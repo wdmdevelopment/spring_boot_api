@@ -13,6 +13,7 @@ public class LoginDTO {
 	@Email(message = "Inccorect email pattern")
 	private String email;
 	
+	
 	@NotBlank(message = "Password is required")
 	@Size(max = 20, min = 8, message = "Password length is minimum 8 and maximum 20")
 	private String password;
